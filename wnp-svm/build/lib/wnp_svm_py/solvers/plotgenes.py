@@ -46,7 +46,7 @@ def plot_top_genes(meta,Kingry):
     # print(max(Aproj))
     # print(max(Lproj))
 
-    fig, ax = plt.subplots(1,1,figsize = (11,7))
+    fig, ax = plt.subplots(1,1,figsize = (12,8))
     sns.heatmap(np.concatenate((ALLB[:,0:6],ALLB[:,24:72]),axis=1),yticklabels=ALLBgenes,xticklabels=Features1,cmap='jet',robust = True)
     plt.ylabel('Genes',fontsize=10)
     plt.xlabel('Samples',fontsize=10)
@@ -70,7 +70,7 @@ def plot_top_genes(meta,Kingry):
     # H2_S.insert(2,'descrip',np.array(GeneB3))
     # H2_S.to_csv(r'C:\Users\ugoob\Google Drive\KIRBY PAPERS\GSVD final Analysis\Tularensis\Lungs_NEW.csv')
 
-    fig, ax = plt.subplots(1,1,figsize = (11,7))
+    fig, ax = plt.subplots(1,1,figsize = (12,8))
     sns.heatmap(np.concatenate((ALLN[:,0:6],ALLN[:,24:72]),axis=1),yticklabels=ALLNgenes,xticklabels=Features2,cmap='jet',robust = True)
     plt.ylabel('Genes',fontsize=10)
     plt.xlabel('Samples',fontsize=10)

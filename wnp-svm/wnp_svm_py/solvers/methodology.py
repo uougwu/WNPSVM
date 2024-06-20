@@ -8,7 +8,30 @@ import math
 from kneed import KneeLocator
 import matplotlib.transforms as mtransforms
 import tensorflow as tf
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import classification_report, confusion_matrix,accuracy_score,balanced_accuracy_score
+from scipy.sparse import diags
 
+from sklearn.model_selection import train_test_split
+from sklearn import svm
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn import tree
+from sklearn import linear_model
+from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import AdaBoostClassifier
+from xgboost import XGBClassifier
+from sklearn.model_selection import RepeatedStratifiedKFold
+from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.feature_selection import RFE
+from sklearn.svm import SVC
+import random
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
 
 
 ##......................................................
@@ -183,8 +206,7 @@ def wnpsvm(A,B,ay0,by0,epsa,delta,q,s):
 
 tf.compat.v1.set_random_seed(10)
 tf.random.set_seed(10)
-def compare_baselines(N,runs,var1,var2):
-    Kingry = scipy.io.loadmat('H:/My Drive/KIRBY PAPERS/GSVD final Analysis/Tularensis/PreKingrynorm_min.mat')
+def compare_baselines(Kingry,N,runs,var1,var2):
     A = Kingry['A']
     L = Kingry['B']
     za = Kingry['ya'].flatten()
@@ -294,76 +316,78 @@ def compare_baselines(N,runs,var1,var2):
         y_predWNPSVM6 = WNPSVMpredict(X_test,fw1,fw2,fb1,fb2)
 
         acc[0,j] = balanced_accuracy_score(y_test, y_predRF)
-        print('Random Forest:', balanced_accuracy_score(y_test, y_predRF))
-        print(confusion_matrix(y_test, y_predRF))
+        # print('Random Forest:', balanced_accuracy_score(y_test, y_predRF))
+        # print(confusion_matrix(y_test, y_predRF))
 
         acc[1,j] = balanced_accuracy_score(y_test, y_predLR)
-        print('Logistic Regression:', balanced_accuracy_score(y_test, y_predLR))
-        print(confusion_matrix(y_test, y_predLR))
+        # print('Logistic Regression:', balanced_accuracy_score(y_test, y_predLR))
+        # print(confusion_matrix(y_test, y_predLR))
 
         acc[2,j] = balanced_accuracy_score(y_test, y_predSVM)
-        print('SVM:', balanced_accuracy_score(y_test, y_predSVM))
-        print(confusion_matrix(y_test, y_predSVM))
+        # print('SVM:', balanced_accuracy_score(y_test, y_predSVM))
+        # print(confusion_matrix(y_test, y_predSVM))
 
         acc[3,j] = balanced_accuracy_score(y_test, y_predDT)
-        print('Decision Tree:', balanced_accuracy_score(y_test, y_predDT))
-        print(confusion_matrix(y_test, y_predDT))
+        # print('Decision Tree:', balanced_accuracy_score(y_test, y_predDT))
+        # print(confusion_matrix(y_test, y_predDT))
 
         acc[4,j] = balanced_accuracy_score(y_test, y_predNB)
-        print('Naive Bayes:', balanced_accuracy_score(y_test, y_predNB))
-        print(confusion_matrix(y_test, y_predNB))
+        # print('Naive Bayes:', balanced_accuracy_score(y_test, y_predNB))
+        # print(confusion_matrix(y_test, y_predNB))
 
         acc[5,j] = balanced_accuracy_score(y_test, y_predKNN)
-        print('KNN:', balanced_accuracy_score(y_test, y_predKNN))
-        print(confusion_matrix(y_test, y_predKNN))
+        # print('KNN:', balanced_accuracy_score(y_test, y_predKNN))
+        # print(confusion_matrix(y_test, y_predKNN))
 
         acc[6,j] = balanced_accuracy_score(y_test, y_predAB)
-        print('Adaboost:', balanced_accuracy_score(y_test, y_predAB))
-        print(confusion_matrix(y_test, y_predAB))
+        # print('Adaboost:', balanced_accuracy_score(y_test, y_predAB))
+        # print(confusion_matrix(y_test, y_predAB))
 
         acc[7,j] = balanced_accuracy_score(y_test, y_predGB)
-        print('Gradientboost:', balanced_accuracy_score(y_test, y_predGB))
-        print(confusion_matrix(y_test, y_predGB))
+        # print('Gradientboost:', balanced_accuracy_score(y_test, y_predGB))
+        # print(confusion_matrix(y_test, y_predGB))
 
         acc[8,j] = balanced_accuracy_score(y_test, y_predXGB)
-        print('Xgradientboost:', balanced_accuracy_score(y_test, y_predXGB))
-        print(confusion_matrix(y_test, y_predXGB))
+        # print('Xgradientboost:', balanced_accuracy_score(y_test, y_predXGB))
+        # print(confusion_matrix(y_test, y_predXGB))
         
         acc[9,j] = balanced_accuracy_score(y_test, y_predANN)
-        print('ANN:', balanced_accuracy_score(y_test, y_predANN))
-        print(confusion_matrix(y_test, y_predANN))
+        # print('ANN:', balanced_accuracy_score(y_test, y_predANN))
+        # print(confusion_matrix(y_test, y_predANN))
         
         acc[10,j] = balanced_accuracy_score(y_test, y_predWNPSVM1)
-        print('$\ell_1$-WNPSVM ($M = \mathcal{L}_1$):', balanced_accuracy_score(y_test, y_predWNPSVM1))
-        print(confusion_matrix(y_test, y_predWNPSVM1))
+        # print('$\ell_1$-WNPSVM ($M = \mathcal{L}_1$):', balanced_accuracy_score(y_test, y_predWNPSVM1))
+        # print(confusion_matrix(y_test, y_predWNPSVM1))
 
         acc[11,j] = balanced_accuracy_score(y_test, y_predWNPSVM2)
-        print('$\ell_1$-WNPSVM ($M = \mathcal{L}_2$):', balanced_accuracy_score(y_test, y_predWNPSVM2))
-        print(confusion_matrix(y_test, y_predWNPSVM2))
+        # print('$\ell_1$-WNPSVM ($M = \mathcal{L}_2$):', balanced_accuracy_score(y_test, y_predWNPSVM2))
+        # print(confusion_matrix(y_test, y_predWNPSVM2))
 
         acc[12,j] = balanced_accuracy_score(y_test, y_predWNPSVM3)
-        print('$\ell_1$-WNPSVM ($M = I$):', balanced_accuracy_score(y_test, y_predWNPSVM3))
-        print(confusion_matrix(y_test, y_predWNPSVM3))
+        # print('$\ell_1$-WNPSVM ($M = I$):', balanced_accuracy_score(y_test, y_predWNPSVM3))
+        # print(confusion_matrix(y_test, y_predWNPSVM3))
 
         acc[13,j] = balanced_accuracy_score(y_test, y_predWNPSVM4)
-        print('$\ell_1$-WNPSVM ($M = D_{\epsilon,1}(\mathbf{z})^2$):', balanced_accuracy_score(y_test, y_predWNPSVM4))
-        print(confusion_matrix(y_test, y_predWNPSVM4))
+        # print('$\ell_1$-WNPSVM ($M = D_{\epsilon,1}(\mathbf{z})^2$):', balanced_accuracy_score(y_test, y_predWNPSVM4))
+        # print(confusion_matrix(y_test, y_predWNPSVM4))
 
         acc[14,j] = balanced_accuracy_score(y_test, y_predWNPSVM5)
-        print('$\ell_1$-WNPSVM ($M = D_{\epsilon,1}(\mathbf{z})$):', balanced_accuracy_score(y_test, y_predWNPSVM5))
-        print(confusion_matrix(y_test, y_predWNPSVM5))
+        # print('$\ell_1$-WNPSVM ($M = D_{\epsilon,1}(\mathbf{z})$):', balanced_accuracy_score(y_test, y_predWNPSVM5))
+        # print(confusion_matrix(y_test, y_predWNPSVM5))
 
         acc[15,j] = balanced_accuracy_score(y_test, y_predWNPSVM6)
-        print('$\ell_1$-WNPSVM ($M = D_{\epsilon,0.1}(\mathbf{z})$):', balanced_accuracy_score(y_test, y_predWNPSVM6))
-        print(confusion_matrix(y_test, y_predWNPSVM6))
+        # print('$\ell_1$-WNPSVM ($M = D_{\epsilon,0.1}(\mathbf{z})$):', balanced_accuracy_score(y_test, y_predWNPSVM6))
+        # print(confusion_matrix(y_test, y_predWNPSVM6))
 
-        indd = random.sample(range(0,24),24) # using 80%
+        indd = random.sample(range(0,24),24) 
         AA = AA[indd,:]
         BB = BB[indd,:]
         X_train = np.concatenate((X1[indd,:],X2[indd,:]),axis=0)
 
         print(j)
+    return acc
 
+def accuracy_report(acc,runs):
     print('Random Forest:', sum(acc[0,:])/runs,'Random Forest:', np.std(acc[0,:]))
     print('Logistic Regression:', sum(acc[1,:])/runs,'Logistic Regression:', np.std(acc[1,:]))
     print('SVM:', sum(acc[2,:])/runs,'SVM:', np.std(acc[2,:]))
