@@ -8,8 +8,8 @@ from kneed import KneeLocator
 import matplotlib.transforms as mtransforms
 import tensorflow as tf
 
-def plot_top_genes(meta,Kingry):
-    Genes = meta['oligo_id']
+def plot_top_genes(meta,Kingry,retained_genes,N):
+    Genes = meta['oligo_id'][retained_genes].reset_index(drop=True)
     Features1 = meta['Samples'].iloc[0:54]
     Features2 = meta['Samples'].iloc[54:108]
 
@@ -30,7 +30,6 @@ def plot_top_genes(meta,Kingry):
     ALLBgen = Genes[ind1]
     ALLNgen = Genes[ind2]
 
-    N = 50
     ALLB = ALB[0:N,:]
     ALLN = ALN[0:N,:]
     ALLBgenes = ALLBgen[0:N].replace(np.nan,'',regex=True)
@@ -41,7 +40,7 @@ def plot_top_genes(meta,Kingry):
     h = f & g
     # print(f.difference(h))
     # print(g.difference(h))
-    #print(len(h)) 
+    print(len(h)) 
 
     # print(max(Aproj))
     # print(max(Lproj))
@@ -61,14 +60,14 @@ def plot_top_genes(meta,Kingry):
     plt.axvline(x = 48, color = 'r', linestyle = '-.',linewidth=6)
     #plt.savefig('Lungs.jpg')
 
-    # GeneB1 = a['ID_REF'][ind1][0:N].replace(np.nan,'',regex=True)
-    # GeneB2 = a['oligo_id'][ind1][0:N].replace(np.nan,'',regex=True)
-    # GeneB3 = a['descrip'][ind1][0:N].replace(np.nan,'',regex=True)
+    # GeneB1 = meta['ID_REF'][retained_genes].reset_index(drop=True)[ind1][0:N].replace(np.nan,'',regex=True)
+    # GeneB2 = meta['oligo_id'][retained_genes].reset_index(drop=True)[ind1][0:N].replace(np.nan,'',regex=True)
+    # GeneB3 = meta['descrip'][retained_genes].reset_index(drop=True)[ind1][0:N].replace(np.nan,'',regex=True)
     # H2_S = pd.DataFrame(np.concatenate((ALLB[:,0:6],ALLB[:,24:72]),axis=1),columns=Features1)
     # H2_S.insert(0,'ID_REF',np.array(GeneB1))
     # H2_S.insert(1,'oligo_id',np.array(GeneB2))
     # H2_S.insert(2,'descrip',np.array(GeneB3))
-    # H2_S.to_csv(r'C:\Users\ugoob\Google Drive\KIRBY PAPERS\GSVD final Analysis\Tularensis\Lungs_NEW.csv')
+    # H2_S.to_csv(r'H:/My Drive/KIRBY PAPERS/GSVD final Analysis/Tularensis/Lungs_NEW_25.csv')
 
     fig, ax = plt.subplots(1,1,figsize = (12,8))
     sns.heatmap(np.concatenate((ALLN[:,0:6],ALLN[:,24:72]),axis=1),yticklabels=ALLNgenes,xticklabels=Features2,cmap='jet',robust = True)
@@ -85,14 +84,14 @@ def plot_top_genes(meta,Kingry):
     plt.axvline(x = 48, color = 'r', linestyle = '-.',linewidth=6)
     #plt.savefig('Spleen.jpg')
 
-    # GeneB1 = a['ID_REF'][ind2][0:N].replace(np.nan,'',regex=True)
-    # GeneB2 = a['oligo_id'][ind2][0:N].replace(np.nan,'',regex=True)
-    # GeneB3 = a['descrip'][ind2][0:N].replace(np.nan,'',regex=True)
+    # GeneB1 = meta['ID_REF'][retained_genes].reset_index(drop=True)[ind2][0:N].replace(np.nan,'',regex=True)
+    # GeneB2 = meta['oligo_id'][retained_genes].reset_index(drop=True)[ind2][0:N].replace(np.nan,'',regex=True)
+    # GeneB3 = meta['descrip'][retained_genes].reset_index(drop=True)[ind2][0:N].replace(np.nan,'',regex=True)
     # H2_S = pd.DataFrame(np.concatenate((ALLN[:,0:6],ALLN[:,24:72]),axis=1),columns=Features2)
     # H2_S.insert(0,'ID_REF',np.array(GeneB1))
     # H2_S.insert(1,'oligo_id',np.array(GeneB2))
     # H2_S.insert(2,'descrip',np.array(GeneB3))
-    # H2_S.to_csv(r'C:\Users\ugoob\Google Drive\KIRBY PAPERS\GSVD final Analysis\Tularensis\Spleen_NEW.csv')
+    # H2_S.to_csv(r'H:/My Drive/KIRBY PAPERS/GSVD final Analysis/Tularensis/Spleen_NEW_25.csv')
 
 
 def plot_weights(Ap,Bp,methods,c,the,thee):
@@ -129,6 +128,6 @@ def plot_weights(Ap,Bp,methods,c,the,thee):
     axs[1].set_ylabel('Sorted Projection Scores', fontsize=20)
     axs[1].set_xlabel('Gene Index', fontsize=20)
 
-    plt.savefig('{}.jpg'.format(thee))
+    #plt.savefig('{}.jpg'.format(thee))
     plt.tight_layout()
     plt.show()
